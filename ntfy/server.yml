@@ -18,8 +18,16 @@ attachment-total-size-limit: "1G"
 attachment-file-size-limit: "15M"
 attachment-expiry-duration: "3h"
 
-# Behind Cloudflare Tunnel — trust X-Forwarded-For for rate limiting
+# Behind Cloudflare Tunnel — trust X-Forwarded-For for rate limiting.
+# Safe because the host port is bound to 127.0.0.1 in docker-compose.yml,
+# so only cloudflared (which sets X-Forwarded-For) can reach this.
 behind-proxy: true
+
+# Rate limits — tightened for internet exposure. Defaults are permissive.
+visitor-request-limit-burst: 30
+visitor-request-limit-replenish: "10s"
+visitor-auth-failure-limit-burst: 10
+visitor-auth-failure-limit-replenish: "1m"
 
 # Web UI enabled (login required because auth-default-access: deny-all)
 web-root: "app"

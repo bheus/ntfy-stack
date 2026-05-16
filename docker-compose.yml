@@ -9,7 +9,10 @@ services:
     environment:
       TZ: America/Los_Angeles
     ports:
-      - "2586:80"
+      # Bind to loopback only — cloudflared-tunnel runs on host network on the
+      # same host and can still reach it. Prevents LAN clients from bypassing
+      # the Cloudflare Tunnel (and spoofing X-Forwarded-For).
+      - "127.0.0.1:2586:80"
     volumes:
       - ${NTFY_CONFIG_PATH:?err}:/etc/ntfy/server.yml:ro
       - ntfy-cache:/var/cache/ntfy
