@@ -1,0 +1,25 @@
+name: ntfy-stack
+
+services:
+  ntfy:
+    image: binwiederhier/ntfy:v2.11.0
+    container_name: ntfy
+    restart: unless-stopped
+    command: serve
+    environment:
+      TZ: America/Los_Angeles
+    ports:
+      - "2586:80"
+    volumes:
+      - ${NTFY_CONFIG_PATH:?err}:/etc/ntfy/server.yml:ro
+      - ntfy-cache:/var/cache/ntfy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --tries=1 --spider http://localhost:80/v1/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+volumes:
+  ntfy-cache:
+    name: ntfy-stack_ntfy-cache

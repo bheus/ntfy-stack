@@ -1,0 +1,15 @@
+# Secrets
+.env
+.env.*
+!.env.example
+stack.env
+
+# Local data
+data/
+
+# Logs
+*.log
+
+# Editor / OS
+.DS_Store
+*.swp
