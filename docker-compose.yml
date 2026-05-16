@@ -8,16 +8,46 @@ services:
     command: serve
     environment:
       TZ: America/Los_Angeles
+
+      # Public URL behind Cloudflare Tunnel
+      NTFY_BASE_URL: "https://ntfy.builtbybrendan.com"
+      NTFY_LISTEN_HTTP: ":80"
+
+      # Auth — deny by default; admin user created via `ntfy user add` after first start.
+      NTFY_AUTH_FILE: "/var/cache/ntfy/user.db"
+      NTFY_AUTH_DEFAULT_ACCESS: "deny-all"
+
+      # Cache (message history for reconnecting subscribers)
+      NTFY_CACHE_FILE: "/var/cache/ntfy/cache.db"
+      NTFY_CACHE_DURATION: "12h"
+
+      # Attachments
+      NTFY_ATTACHMENT_CACHE_DIR: "/var/cache/ntfy/attachments"
+      NTFY_ATTACHMENT_TOTAL_SIZE_LIMIT: "1G"
+      NTFY_ATTACHMENT_FILE_SIZE_LIMIT: "15M"
+      NTFY_ATTACHMENT_EXPIRY_DURATION: "3h"
+
+      # Behind Cloudflare Tunnel — trust X-Forwarded-For. Safe because the host
+      # port is bound to 127.0.0.1, so only cloudflared can reach this.
+      NTFY_BEHIND_PROXY: "true"
+
+      # Web UI enabled (login required because auth-default-access: deny-all)
+      NTFY_WEB_ROOT: "app"
+
+      # Rate limits — tightened for internet exposure.
+      NTFY_VISITOR_REQUEST_LIMIT_BURST: "30"
+      NTFY_VISITOR_REQUEST_LIMIT_REPLENISH: "10s"
+      NTFY_VISITOR_AUTH_FAILURE_LIMIT_BURST: "10"
+      NTFY_VISITOR_AUTH_FAILURE_LIMIT_REPLENISH: "1m"
+
+      NTFY_LOG_LEVEL: "INFO"
+      NTFY_LOG_FORMAT: "text"
     ports:
       # Bind to loopback only — cloudflared-tunnel runs on host network on the
       # same host and can still reach it. Prevents LAN clients from bypassing
       # the Cloudflare Tunnel (and spoofing X-Forwarded-For).
       - "127.0.0.1:2586:80"
     volumes:
-      - type: bind
-        source: ./ntfy/server.yml
-        target: /etc/ntfy/server.yml
-        read_only: true
       - ntfy-cache:/var/cache/ntfy
     healthcheck:
       test: ["CMD-SHELL", "wget -q --tries=1 --spider http://localhost:80/v1/health || exit 1"]
