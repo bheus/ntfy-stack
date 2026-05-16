@@ -60,4 +60,4 @@ ntfy subscribe -u homelab:PASSWORD https://ntfy.builtbybrendan.com/homelab-alert
 
 - `ntfy-cache` named volume holds `user.db`, `cache.db`, and attachments.
 - `behind-proxy: true` makes rate limiting use `X-Forwarded-For` from Cloudflare.
-- Image pinned to `v2.11.0`; verify and bump deliberately.
+- Image pinned to `v2.22.0`; verify and bump deliberately.
