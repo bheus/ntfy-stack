@@ -14,7 +14,10 @@ services:
       # the Cloudflare Tunnel (and spoofing X-Forwarded-For).
       - "127.0.0.1:2586:80"
     volumes:
-      - ${NTFY_CONFIG_PATH:?err}:/etc/ntfy/server.yml:ro
+      - type: bind
+        source: ./ntfy/server.yml
+        target: /etc/ntfy/server.yml
+        read_only: true
       - ntfy-cache:/var/cache/ntfy
     healthcheck:
       test: ["CMD-SHELL", "wget -q --tries=1 --spider http://localhost:80/v1/health || exit 1"]

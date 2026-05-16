@@ -10,9 +10,7 @@ Self-hosted [ntfy](https://ntfy.sh) push-notification server, deployed on apple-
 ## Deploy (Portainer)
 
 1. Add this repo as a Portainer Git stack.
-2. Set environment variable in the stack config:
-   - `NTFY_CONFIG_PATH=/data/compose/<N>/ntfy/server.yml` (Portainer substitutes `<N>` with the stack ID; or use an absolute host path if you cloned the repo elsewhere).
-3. Deploy.
+2. Deploy. No environment variables required — the config is bind-mounted from `./ntfy/server.yml` in the repo.
 
 ## Post-deploy: bootstrap admin user
 
