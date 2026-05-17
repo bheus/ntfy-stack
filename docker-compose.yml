@@ -34,6 +34,13 @@ services:
       # Web UI enabled (login required because auth-default-access: deny-all)
       NTFY_WEB_ROOT: "app"
 
+      # iOS background push requires APNs, which only works via ntfy.sh.
+      # This forwards a "poll request" (topic name + msg ID, no body) to
+      # ntfy.sh so APNs wakes the iOS app, which then fetches from us.
+      # Privacy: topic names + msg IDs are visible to ntfy.sh; bodies and
+      # auth stay on this server.
+      NTFY_UPSTREAM_BASE_URL: "https://ntfy.sh"
+
       # Rate limits — tightened for internet exposure.
       NTFY_VISITOR_REQUEST_LIMIT_BURST: "30"
       NTFY_VISITOR_REQUEST_LIMIT_REPLENISH: "10s"
